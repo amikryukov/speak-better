@@ -8,23 +8,37 @@ function todayISO() {
   return y + '-' + m + '-' + day;
 }
 
+function isValidSession(s) {
+  return !!s && typeof s === 'object' &&
+    typeof s.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.date) &&
+    typeof s.drillId === 'string' &&
+    typeof s.minutes === 'number' && Number.isFinite(s.minutes);
+}
+
 function loadState(storage) {
-  storage = storage || (typeof localStorage !== 'undefined' ? localStorage : null);
   try {
-    const raw = storage ? storage.getItem(STORAGE_KEY) : null;
+    const store = storage || (typeof localStorage !== 'undefined' ? localStorage : null);
+    const raw = store ? store.getItem(STORAGE_KEY) : null;
     if (!raw) return createState();
     const parsed = JSON.parse(raw);
-    if (!parsed || typeof parsed.goal !== 'number' || !Array.isArray(parsed.sessions)) {
+    if (!parsed || typeof parsed.goal !== 'number' || !Number.isFinite(parsed.goal) || parsed.goal < 1 || !Array.isArray(parsed.sessions)) {
       return createState();
     }
-    return parsed;
+    return { goal: parsed.goal, sessions: parsed.sessions.filter(isValidSession) };
   } catch (e) {
     return createState();
   }
 }
 
-function saveState(state) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+function saveState(state, storage) {
+  try {
+    const store = storage || (typeof localStorage !== 'undefined' ? localStorage : null);
+    if (!store) return false;
+    store.setItem(STORAGE_KEY, JSON.stringify(state));
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 function trackLabel(track) {
@@ -44,6 +58,7 @@ function render(state) {
   document.getElementById('drill-minutes').textContent = '≈ ' + drill.minutes + ' минут';
   renderHistory(state);
   renderResources();
+  renderSettings(state);
 }
 
 function renderHistory(state) {
@@ -87,6 +102,12 @@ function renderResources() {
   }
 }
 
+function renderSettings(state) {
+  for (const b of document.querySelectorAll('.goal-btn')) {
+    b.classList.toggle('active', Number(b.getAttribute('data-goal')) === state.goal);
+  }
+}
+
 function logAndRender(state) {
   const today = todayISO();
   const drill = pickDrillForDate(DRILLS, today);
@@ -102,6 +123,20 @@ function boot() {
   document.getElementById('done-button').addEventListener('click', function () {
     state = logAndRender(state);
   });
+  for (const b of document.querySelectorAll('.goal-btn')) {
+    b.addEventListener('click', function () {
+      state = setGoal(state, Number(b.getAttribute('data-goal')));
+      saveState(state);
+      render(state);
+    });
+  }
+  document.getElementById('reset-button').addEventListener('click', function () {
+    if (typeof confirm !== 'function' || confirm('Сбросить всю историю и цель?')) {
+      state = createState();
+      saveState(state);
+      render(state);
+    }
+  });
   const buttons = document.querySelectorAll('.tab-btn');
   for (const btn of buttons) {
     btn.addEventListener('click', function () {
@@ -113,9 +148,13 @@ function boot() {
 }
 
 if (typeof document !== 'undefined' && typeof localStorage !== 'undefined') {
-  boot();
+  try {
+    boot();
+  } catch (e) {
+    // Last resort: nothing further to do without a working DOM/storage.
+  }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { STORAGE_KEY, todayISO, loadState, saveState, render, logAndRender, boot };
+  module.exports = { STORAGE_KEY, todayISO, loadState, saveState, render, logAndRender, boot, renderSettings, isValidSession };
 }

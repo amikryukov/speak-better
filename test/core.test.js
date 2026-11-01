@@ -79,6 +79,15 @@ test('sessionsThisWeek counts only the Mon-Sun week of today', () => {
   assert.strictEqual(c.sessionsThisWeek(sessions, '2026-11-05'), 3);
 });
 
+test('sessionsThisWeek counts each session, including same-day duplicates', () => {
+  const sessions = [
+    { date: '2026-11-05', drillId: 'a', minutes: 10 },
+    { date: '2026-11-05', drillId: 'b', minutes: 15 },
+    { date: '2026-11-03', drillId: 'c', minutes: 15 },
+  ];
+  assert.strictEqual(c.sessionsThisWeek(sessions, '2026-11-05'), 3);
+});
+
 test('pickDrillForDate is deterministic and rotates across the library', () => {
   const drills = Array.from({ length: 15 }, (_, i) => ({ id: `d${i}` }));
   const d = '2026-11-02';
@@ -86,4 +95,12 @@ test('pickDrillForDate is deterministic and rotates across the library', () => {
   const ids = new Set();
   for (let i = 0; i < 15; i++) ids.add(c.pickDrillForDate(drills, addDays(d, i)).id);
   assert.strictEqual(ids.size, 15);
+});
+
+test('setGoal returns a new state with the new goal, preserving sessions', () => {
+  const s = { goal: 3, sessions: [{ date: '2026-11-05', drillId: 'a', minutes: 15 }] };
+  const s2 = c.setGoal(s, 5);
+  assert.strictEqual(s.goal, 3);
+  assert.strictEqual(s2.goal, 5);
+  assert.deepStrictEqual(s2.sessions, s.sessions);
 });

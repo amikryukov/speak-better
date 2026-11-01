@@ -184,6 +184,45 @@
     }
     .resource .title { font-weight: 600; font-size: 14px; }
     .resource .note { color: var(--muted); font-size: 12px; margin-top: 2px; }
+
+    .goal-picker { display: flex; gap: 8px; }
+    .goal-btn {
+      flex: 1;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 10px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .goal-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .danger-button {
+      width: 100%;
+      border: 1px solid var(--danger);
+      background: transparent;
+      color: var(--danger);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 11px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .danger-button:active { background: #fee2e2; }
+    .hint {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      color: #92400e;
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
@@ -193,10 +232,13 @@
       <p>Краткость · Словарный запас · Теплота</p>
     </header>
 
+    <div id="offline-hint" class="hint" hidden>Офлайн-режим и установка недоступны — откройте приложение через HTTPS.</div>
+
     <nav class="tabs">
       <button class="tab-btn active" data-tab="today">Сегодня</button>
       <button class="tab-btn" data-tab="history">История</button>
       <button class="tab-btn" data-tab="resources">Ресурсы</button>
+      <button class="tab-btn" data-tab="settings">Настройки</button>
     </nav>
 
     <section id="tab-today" class="tab">
@@ -228,6 +270,23 @@
     <section id="tab-resources" class="tab hidden">
       <div id="resources-list"></div>
     </section>
+
+    <section id="tab-settings" class="tab hidden">
+      <div class="card">
+        <h2>Цель на неделю</h2>
+        <div class="goal-picker">
+          <button class="goal-btn" data-goal="3">3</button>
+          <button class="goal-btn" data-goal="4">4</button>
+          <button class="goal-btn" data-goal="5">5</button>
+        </div>
+        <p class="drill-meta">Сколько сессий в неделю вы хотите проводить.</p>
+      </div>
+      <div class="card">
+        <h2>Данные</h2>
+        <p>История хранится только на этом устройстве.</p>
+        <button id="reset-button" class="danger-button">Сбросить данные</button>
+      </div>
+    </section>
   </div>
 
   <script src="src/core.js"></script>
@@ -235,7 +294,11 @@
   <script src="src/resources.js"></script>
   <script src="src/main.js"></script>
   <script>
-    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+    if (!window.isSecureContext) {
+      var hint = document.getElementById('offline-hint');
+      if (hint) hint.hidden = false;
+    }
+    if ('serviceWorker' in navigator && window.isSecureContext) {
       navigator.serviceWorker.register('./sw.js').catch(function () {});
     }
   </script>

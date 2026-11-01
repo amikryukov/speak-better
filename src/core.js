@@ -47,6 +47,10 @@ function pickDrillForDate(drills, dateISO) {
   return drills[daysSinceEpochUTC(dateISO) % drills.length];
 }
 
+function setGoal(state, goal) {
+  return { goal, sessions: state.sessions };
+}
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
     createState,
@@ -54,6 +58,7 @@ if (typeof module !== 'undefined' && module.exports) {
     sessionsOnDate,
     computeStreak,
     sessionsThisWeek,
-    pickDrillForDate
+    pickDrillForDate,
+    setGoal
   };
 }
