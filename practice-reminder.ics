@@ -1,0 +1,13 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//speak-better//Practice reminder//RU
+BEGIN:VEVENT
+UID:speak-better-practice-reminder@example.com
+DTSTAMP:20261101T000000Z
+DTSTART:20261102T190000
+DURATION:PT15M
+RRULE:FREQ=WEEKLY;BYDAY=MO,WE,FR
+SUMMARY:Практика речи (10–15 мин)
+DESCRIPTION:Краткость · Словарный запас · Теплота. Откройте трекер и выполните сегодняшнее упражнение.
+END:VEVENT
+END:VCALENDAR
