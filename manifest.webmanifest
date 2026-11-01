@@ -1,0 +1,18 @@
+{
+  "name": "Практика речи",
+  "short_name": "Практика",
+  "description": "Трекер ежедневной практики речи: краткость, словарный запас, теплота.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f4f1",
+  "theme_color": "#1f2933",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230f766e'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='24'%20fill='%23ffffff'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

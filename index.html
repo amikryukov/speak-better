@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#1f2933" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230f766e'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='24'%20fill='%23ffffff'/%3E%3C/svg%3E" />
   <title>Практика речи</title>
   <style>
     :root {
@@ -232,5 +234,10 @@
   <script src="src/drills.js"></script>
   <script src="src/resources.js"></script>
   <script src="src/main.js"></script>
+  <script>
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.protocol === 'http:')) {
+      navigator.serviceWorker.register('./sw.js').catch(function () {});
+    }
+  </script>
 </body>
 </html>
