@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1f2933" />
+  <title>Практика речи</title>
+  <style>
+    :root {
+      --bg: #f5f4f1;
+      --card: #ffffff;
+      --text: #1f2933;
+      --muted: #6b7280;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --border: #e5e7eb;
+      --danger: #b91c1c;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px 16px 40px;
+    }
+    header {
+      padding: 12px 0 16px;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    header p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      background: #e9e7e2;
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 16px;
+    }
+    .tab-btn {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 9px 4px;
+      border-radius: 9px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+    }
+
+    .tab.hidden { display: none; }
+
+    .stat-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      flex: 1;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .drill-track {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 3px 9px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .card h2 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .card p {
+      margin: 0 0 12px;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .drill-meta {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .done-button {
+      width: 100%;
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 15px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .done-button:active { background: #0b5f58; }
+    .done-button:disabled { background: #9ca3af; cursor: default; }
+
+    .list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .list li {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .list li .date { color: var(--muted); font-size: 12px; }
+
+    .resource-group {
+      margin-bottom: 20px;
+    }
+    .resource-group h3 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin: 0 0 8px;
+    }
+    .resource {
+      display: block;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .resource .title { font-weight: 600; font-size: 14px; }
+    .resource .note { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Практика речи</h1>
+      <p>Краткость · Словарный запас · Теплота</p>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab-btn active" data-tab="today">Сегодня</button>
+      <button class="tab-btn" data-tab="history">История</button>
+      <button class="tab-btn" data-tab="resources">Ресурсы</button>
+    </nav>
+
+    <section id="tab-today" class="tab">
+      <div class="stat-row">
+        <div class="stat">
+          <div class="stat-value" id="streak">0</div>
+          <div class="stat-label">дней подряд</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="week-count">0/3</div>
+          <div class="stat-label">на этой неделе</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="drill-track" id="drill-track">—</span>
+        <h2 id="drill-title">—</h2>
+        <p id="drill-desc">—</p>
+        <div class="drill-meta" id="drill-minutes">—</div>
+      </div>
+
+      <button id="done-button" class="done-button">Готово</button>
+    </section>
+
+    <section id="tab-history" class="tab hidden">
+      <ul id="history-list" class="list"></ul>
+    </section>
+
+    <section id="tab-resources" class="tab hidden">
+      <div id="resources-list"></div>
+    </section>
+  </div>
+
+  <script src="src/core.js"></script>
+  <script src="src/drills.js"></script>
+  <script src="src/resources.js"></script>
+  <script src="src/main.js"></script>
+</body>
+</html>
